@@ -103,7 +103,7 @@ end case;
 if arm = '0' then 
 rgb <= "100";
 else
-rgb <= "011";
+rgb <= "010";
 Record_PS <= '1';
 end if;
 
