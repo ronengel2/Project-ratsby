@@ -37,7 +37,7 @@ use IEEE.std_logic_unsigned.all;
 
 entity Alarm_btn is
 Port (
-btn: in std_logic_vector(3 downto 0):=(others => '0');
+btn: in std_logic_vector(3 downto 0);
 Record_PS: out std_logic;
 RGB:out std_logic_vector(2 downto 0);
 Led: out std_logic_vector(3 downto 0)
@@ -49,16 +49,15 @@ type Statetype is (State1,State2,State3,State4,State5,State6);
 signal state:Statetype:=State1;
 signal arm : std_logic:='0';
 begin
-process(btn)
+process(btn,state)
 begin
 case state is
 when state1 =>
-Record_PS <= '0';
+arm <= '0';
 if btn = "0100" then
 state <= state2;
-end if;
-if btn = "0000" then
-
+elsif btn = "0000" then
+state <= state1;
 else
 state <= state1;
 end if;
@@ -66,7 +65,7 @@ when state2 =>
 if btn = "0100" then
 state <= state3;
 elsif btn = "0000" then
-
+state <= state2;
 else
 state <= state1;
 end if;
@@ -74,7 +73,7 @@ when state3 =>
 if btn = "0100" then
 state <= state4;
 elsif btn = "0000" then
-
+state <= state3;
 else
 state <= state1;
 end if;
@@ -82,7 +81,7 @@ when state4 =>
 if btn = "0100" then
 state <= state5;
 elsif btn = "0000" then
-
+state <= state4;
 else
 state <= state1;
 
@@ -91,17 +90,24 @@ when state5 =>
 if btn = "0100" then
 state <= state6;
 elsif btn = "0000" then
-
+state <= state5;
 else
 state <= state1;
 
 end if;
 when state6 =>
-arm <= not arm; 
-state <= state1;
+arm <= '1'; 
+if btn = "0100" then
+state <= state6;
+elsif btn = "0000" then
+state <= state6;
+else
+state <=  state1;
+end if;
 end case;
 if arm = '0' then 
 rgb <= "100";
+Record_PS <= '0';
 else
 rgb <= "010";
 Record_PS <= '1';
